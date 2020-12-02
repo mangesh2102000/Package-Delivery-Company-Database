@@ -834,3 +834,44 @@ where Package_ID IN
 (SELECT Package_ID
 FROM International));
 
+// ADDING INDEX 
+As in most of the cases for querying we are using or requiring only primary key attributes, till now we did not find any requirement for indices on other attributes.There can be an index on Receiver's Name Attribute as it is possible to have useful queries involving receiver details. So, I have created an index on Receiver Name in Delivery_of_Package Relationship Table
+
+
+create index idx_DoP1 on delivery_of_package(Receiver_Name);
+
+## Query involving Reciever Name 
+Find the Name of all recievers of packages weighing less than 1000 units
+
+select Receiver_Name
+from delivery_of_package,Package
+where delivery_of_package.Package_ID = Package.Package_ID and Package.Weight < 1000;
+
++----------------+
+| Receiver_Name  |
++----------------+
+| jklMN          |
+| TUVdefghi      |
+| fghijklMNOPQWX |
+| lMNOPQWX       |
++----------------+
+4 rows in set (0.01 sec)
+
+mysql> create index idx_DoP1 on delivery_of_package(Receiver_Name);
+Query OK, 0 rows affected (0.06 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> select Receiver_Name
+    -> from delivery_of_package,Package
+    -> where delivery_of_package.Package_ID = Package.Package_ID and Package.Weight < 1000;
++----------------+
+| Receiver_Name  |
++----------------+
+| lMNOPQWX       |
+| TUVdefghi      |
+| jklMN          |
+| fghijklMNOPQWX |
++----------------+
+4 rows in set (0.00 sec)
+
+So, Query Speeds up a little.
